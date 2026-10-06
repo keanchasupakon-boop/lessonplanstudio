@@ -545,9 +545,9 @@ window.selectSubjectChoice = function(id) {
 
   const sub = window.LESSON_PLAN_DATA?.subjects.find(s => s.id === id);
   if (id === 'other') {
-    showToast(`เลือก: วิชาอื่นๆ / ภาษาอื่นๆ กรุณาระบุชื่อวิชาด้านล่าง 🌐`);
+    showToast(`เลือก: วิชาอื่นๆ / ภาษาอื่นๆ 🌐`);
   } else {
-    showToast(`เลือกวิชา: ${sub?.name || id} (ปรับเปลี่ยนตัวอย่างตรงตามวิชาแล้ว) ✨`);
+    showToast(`เลือกวิชา: ${sub?.name || id} ✨`);
   }
 };
 
@@ -609,7 +609,7 @@ window.selectIndividualGrade = function(gradeId) {
   appState.formData.grade = gradeId;
   renderStep2Grades();
   const label = window.LESSON_PLAN_DATA.getGradeLabel(gradeId);
-  showToast(`เลือกระดับชั้น: ${label.short} (${label.category}) 🎒`);
+  showToast(`เลือกระดับชั้น: ${label.short} 🎒`);
 };
 
 /**
@@ -1769,22 +1769,28 @@ function showToast(msg, type = 'info') {
   const container = document.getElementById('toast-container');
   if (!container) return;
 
+  // Clear previous toasts so they don't pile up or clutter the mobile view
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+
   const toast = document.createElement('div');
   const colors = {
-    info: 'bg-purple-950/95 text-white border-purple-500',
-    success: 'bg-emerald-950/95 text-white border-emerald-500',
-    warning: 'bg-amber-950/95 text-white border-amber-500'
+    info: 'bg-purple-950/90 text-white border-purple-400/40 shadow-purple-900/30',
+    success: 'bg-emerald-950/90 text-white border-emerald-400/40 shadow-emerald-900/30',
+    warning: 'bg-amber-950/90 text-white border-amber-400/40 shadow-amber-900/30'
   };
 
-  toast.className = `flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl backdrop-blur-md border-2 text-xs sm:text-sm font-bold animate-cute-pop ${colors[type] || colors.info}`;
+  // Capsule pill design with pointer-events-none so it NEVER blocks any click or touch
+  toast.className = `pointer-events-none select-none flex items-center justify-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-lg backdrop-blur-md border text-center text-xs sm:text-sm font-bold animate-cute-pop ${colors[type] || colors.info}`;
   toast.innerHTML = `<span>${msg}</span>`;
 
   container.appendChild(toast);
 
   setTimeout(() => {
     toast.style.opacity = '0';
-    toast.style.transform = 'translateY(-10px)';
-    toast.style.transition = 'all 0.3s ease';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
+    toast.style.transform = 'translateY(-6px) scale(0.95)';
+    toast.style.transition = 'all 0.25s ease';
+    setTimeout(() => toast.remove(), 250);
+  }, 1800);
 }
